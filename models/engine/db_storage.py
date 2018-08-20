@@ -83,6 +83,21 @@ class DBStorage:
         Session = scoped_session(factory)
         self.__session = Session()
 
+
+    def get(self, cls, id):
+        """" A method to retrieve one object """
+        grab_obj = self.all(cls).values()
+        for obj in grab_obj:
+            if obj.id == id:
+                return obj
+        return None
+
+    def count(self, cls=None):
+        """ A method to count the number of objects in storage """
+        if cls:
+            num_obj = self.all(cls)
+            return len(num_obj)
+
     def close(self):
         '''
             Remove private session attribute
