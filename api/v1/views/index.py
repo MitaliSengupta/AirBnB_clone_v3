@@ -7,14 +7,12 @@ from models import storage
 from api.v1.views import app_views
 
 
-app_views = Blueprint("app_views", __name__)
-
-@app_views.route('/status')
+@app_views.route('/status', strict_slashes=False)
 def status():
     """ retrieves the status of a JSON file """
     return jsonify({"status": "OK"})
 
-@app_views.route("/stats")
+@app_views.route('/stats', strict_slashes=False)
 def stats():
     return jsonify({
         "amenities": storage.count("Amenity"),
