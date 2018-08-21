@@ -14,10 +14,10 @@ def all_user():
     users = storage.all('User').values()
     for user in users:
         usr_obj.append(user.to_dict())
-    return jsonify(users)
+    return jsonify(usr_obj)
 
 @app_views.route('/users/<user_id>', methods=['GET'], strict_slashes=False)
-def indv_user():
+def indv_user(user_id=None):
     """ Retrieves a User object """
     user = storage.get('User', user_id)
     if user:
@@ -26,7 +26,7 @@ def indv_user():
         abort(404)
 
 @app_views.route('/users/<user_id>', methods=['DELETE'], strict_slashes=False)
-def del_user():
+def del_user(user_id=None):
     """ Deletes a User object """
     user = storage.all('User').value()
     if user is None:
@@ -54,7 +54,7 @@ def create_user():
         return (jsonify(new_user.to_dict()), 201)
 
 @app_views.route('/users/<user_id>', methods=['PUT'], strict_slashes=False)
-def update_user():
+def update_user(user_id=None):
     """ Updates a User object """
     req = request.get_json()
     if req is None:
