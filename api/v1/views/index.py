@@ -12,7 +12,7 @@ def status():
     """
     return status in json
     """
-    stat = {"status" : "OK"}
+    stat = {"status": "OK"}
     return (jsonify(stat))
 
 
