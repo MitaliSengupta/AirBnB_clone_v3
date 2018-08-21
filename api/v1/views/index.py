@@ -1,10 +1,10 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 """
-creating api file
+an endpoint that retrieves the number of each objects by type
 """
-from api.v1.views import app_views
-from flask import jsonify
+from flask import jsonify, Blueprint
 from models import storage
+from api.v1.views import app_views
 
 
 @app_views.route("/status")
