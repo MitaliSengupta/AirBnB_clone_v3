@@ -12,6 +12,7 @@ def status():
     """ retrieves the status of a JSON file """
     return jsonify({"status": "OK"})
 
+
 @app_views.route('/stats', strict_slashes=False)
 def stats():
     return jsonify({
