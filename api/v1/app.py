@@ -1,22 +1,25 @@
 #!/usr/bin/env python3
 """
-App basis
+creating blueprint for flask
 """
 from flask import Flask, Blueprint,  make_response, jsonify
 from models import storage
-from os import getenv
+import os
 from flask_cors import CORS
 from api.v1.views import app_views
 
 
 app = Flask(__name__)
+app.url_map.strict_slashes = False
 app.register_blueprint(app_views)
 cors = CORS(app, resources={'/*': {'origins': '0.0.0.0'}})
+
 
 @app.teardown_appcontext
 def teardown(error):
     """ closes down current session """
     storage.close()
+
 
 @app.errorhandler(404)
 def not_found(error):

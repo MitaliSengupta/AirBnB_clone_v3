@@ -7,19 +7,24 @@ from models import storage
 from api.v1.views import app_views
 
 
-@app_views.route('/status', strict_slashes=False)
+@app_views.route("/status")
 def status():
-    """ retrieves the status of a JSON file """
-    return jsonify({"status": "OK"})
+    """
+    return status in json
+    """
+    stat = {"status" : "OK"}
+    return (jsonify(stat))
 
 
-@app_views.route('/stats', strict_slashes=False)
+@app_views.route("/stats")
 def stats():
-    return jsonify({
-        "amenities": storage.count("Amenity"),
-        "cities": storage.count("City"),
-        "places":  storage.count("Place"),
-        "reviews":  storage.count("Review"),
-        "states":  storage.count("State"),
-        "users": storage.count("User")
-        })
+    """
+    endpoint that retrieves number of obj by type
+    """
+    stat = {"amenities": storage.count("Amenity"),
+            "cities": storage.count("City"),
+            "places": storage.count("Place"),
+            "reviews": storage.count("Review"),
+            "states": storage.count("State"),
+            "users": storage.count("User")}
+    return (jsonify(stat))
