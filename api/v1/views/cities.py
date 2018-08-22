@@ -10,24 +10,24 @@ from models import State
 from models import City
 
 
-@app_views.route("/states/<state_id>/cities", methods=["GET"],
+@app_views.route("/states/<uuid:state_id>/cities", methods=["GET"],
                  strict_slashes=False)
 def state_city(state_id):
     """
     function to retrieve list of all cities connected to states
     """
     state = storage.get("State", state_id)
-    if not state:
+    if state is None:
         abort(404)
     cities = []
     all_cities = storage.all("City")
     for k, v in all_cities.items():
-        if v.state_id == state_id:
+        if v.state_id == str(state_id):
             cities.append(v.to_dict())
     return (jsonify(cities))
 
 
-@app_views.route("/cities/<city_id>", methods=["GET"],
+@app_views.route("/cities/<uuid:city_id>", methods=["GET"],
                  strict_slashes=False)
 def city_all(city_id):
     """
@@ -39,7 +39,7 @@ def city_all(city_id):
     return (jsonify(ct.to_dict()))
 
 
-@app_views.route('/cities/<city_id>', methods=["DELETE"],
+@app_views.route('/cities/<uuid:city_id>', methods=["DELETE"],
                  strict_slashes=False)
 def delete_cities(city_id):
     """
@@ -57,7 +57,7 @@ def delete_cities(city_id):
     return (jsonify({}), 200)
 
 
-@app_views.route('/states/<state_id>/cities', methods=["POST"],
+@app_views.route('/states/<uuid:state_id>/cities', methods=["POST"],
                  strict_slashes=False)
 def post_cities(state_id):
     """
@@ -83,7 +83,7 @@ def post_cities(state_id):
     return (jsonify(add_city.to_dict()), 201)
 
 
-@app_views.route('/cities/<city_id>', methods=["PUT"],
+@app_views.route('/cities/<uuid:city_id>', methods=["PUT"],
                  strict_slashes=False)
 def update_cities(city_id):
     """
