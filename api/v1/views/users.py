@@ -49,21 +49,22 @@ def delete_user(user_id):
 def create_user():
     """ Creates a User """
     req = request.get_json()
+    usr_obj = storage.all("User", user_id)
+    if usr_obj is None:
+        abort(404)
     if req is None:
         return (jsonify({'error': 'Not a JSON'}), 400)
     if 'email' not in req:
         return (jsonify({'error': 'Missing email'}), 400)
     if 'password' not in req:
         return (jsonify({'error': 'Missing password'}), 400)
-    usr_obj = storage.all("User", user_id)
-    if usr_obj is None:
-        abort(404)
-    if 'email' in req and 'password' in req:
-        new_user = User()
-        for key, value in req.items():
-            setattr(new_user, key, value)
-        new_user.save()
-        return (jsonify(new_user.to_dict()), 201)
+    u_email = req["email"]
+    u_password = req["password"]
+    new_user = User(email=u_email, password=u_password)
+    for key, value in req.items():
+        setattr(new_user, key, value)
+    new_user.save()
+    return (jsonify(new_user.to_dict()), 201)
 
 
 @app_views.route('/users/<user_id>', methods=['PUT'], strict_slashes=False)
