@@ -9,10 +9,10 @@ from models import storage, Review, Place
 
 @app_views.route('/places/<place_id>/reviews', methods=['GET'],
                  strict_slashes=False)
-def all_reviews(place_id):
+def all_reviews(place_id=None):
     """ Retrieves the list of all Review objects of a Place """
     place_obj = storage.get('Place', place_id)
-    if place_id is None or place_obj is None:
+    if not place_id or not place_obj:
         abort(404)
     else:
         rev_obj = []
@@ -22,23 +22,27 @@ def all_reviews(place_id):
 
 
 @app_views.route('/reviews/<review_id>', methods=['GET'], strict_slashes=False)
-def indv_review(review_id):
+def indv_review(review_id=None):
     """ Retrieves a Review object """
     review_obj = storage.get('Review', review_id)
-    if review_id is None or review_obj is None:
+    if not review_id:
         abort(404)
-    if review_obj:
+    if not review_obj:
+        abort(404)
+    else:
         return jsonify(review.to_dict)
 
 
 @app_views.route('/reviews/<review_id>', methods=['DELETE'],
                  strict_slashes=False)
-def del_review(review_id):
+def del_review(review_id=None):
     """ Deletes a Review object """
     review_obj = storage.get('Review', review_id)
-    if review_id is None or review_obj is None:
+    if notreview_id:
         abort(404)
-    if review_obj:
+    if not review_obj:
+        abort(404)
+    else:
         storage.delete(review_obj)
         return (jsonify({}), 200)
 
@@ -49,7 +53,7 @@ def create_review(place_id):
     """ Creates a Review """
     place_obj = storage.get('Place', place_id)
     req = request.get_json()
-    if place_obj is None:
+    if not place_obj:
         abort(404)
     if req is None:
         abort(400, 'Not a JSON')
@@ -64,11 +68,11 @@ def create_review(place_id):
 
 
 @app_views.route('/reviews/<review_id>', methods=['PUT'], strict_slashes=False)
-def update_review(review_id):
+def update_review(review_id=None):
     """ Updates a Review object """
     rev_obj = storage.get('Review', review_id)
     req = request.get_json()
-    if review_id is None or rev_obj is None:
+    if not review_id or not rev_obj:
         abort(404)
     if req is None:
         abort(400, 'Not a JSON')
