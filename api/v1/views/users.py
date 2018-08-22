@@ -59,7 +59,7 @@ def create_user(user_id):
     if 'password' not in req:
         return (jsonify({'error': 'Missing password'}), 400)
     if 'email' in req and 'password' in req:
-        content['user_id'] = user.id
+        req['user_id'] = user.id
         post_user = User(**req)
         post_user.save()
         return (jsonify(post_user.to_dict()), 201)
