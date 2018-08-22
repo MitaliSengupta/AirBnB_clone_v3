@@ -50,6 +50,7 @@ def delete_cities(city_id):
     storage.save()
     return (jsonify({}), 200)
 
+
 @app_views.route('/states/<state_id>/cities', methods=["POST"],
                  strict_slashes=False)
 def post_cities(state_id):
@@ -77,19 +78,11 @@ def update_cities(city_id):
     """
     function to update City
     """
-    check = ["id", "created_at", "updated_at", "state_id"]
-
     set_city = storage.get("City", city_id)
-    if not set_city:
-        abort(404)
-
     if not request.json:
-        return (jsonify({"error": "Not a JSON"}), 400)
-
-    content = request.get_json()
-    for key, value in content.items():
-        if key not in check:
-            setattr(set_city, key, value)
-
+        abort(400, "Not a JSON")
+    for k, v in request.json.items():
+        if k not in ["id", "created_at", "updated_at"]:
+            setattr(set_city, k, v)
     set_city.save()
     return (jsonify(set_city.to_dict()), 200)
