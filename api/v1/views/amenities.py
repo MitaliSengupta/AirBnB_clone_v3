@@ -13,20 +13,28 @@ from api.v1.views import app_views
 
 @app_views.route("/amenities", methods=["GET"], strict_slashes=False)
 @app_views.route("/amenities/", methods=["GET"], strict_slashes=False)
-@app_views.route("/amenities/<amenity_id>", methods=["GET"],
-                 strict_slashes=False)
 def amen(amenity_id=None):
     """
     prints all amenities
     """
-    if amenity_id is None:
-        get_am = storage.all("Amenity")
-        list_am = [value.to_dict() for key, value in get_am.items()]
-        return (jsonify(list_am))
-    list_am = storage.get("Amenity", amenity_id)
-    if list_am is None:
+    get_am = []
+    amenity = storage.all("Amenity").values()
+    for v in amenity:
+        get_am.append(v.to_dict())
+    return (jsonify(get_am))
+
+
+@app_views.route("/amenities/<amenity_id>", methods=["GET"],
+                 strict_slashes=False)
+def get_am_id(amenity_id):
+    """
+    function to get amenity based on id
+    """
+    try:
+        amenity = storage.get("Amenity", amenity_id)
+        return (jsonify(amenity.to_dict()))
+    except Exception:
         abort(404)
-    return (jsonify(list_am.to_dict()))
 
 
 @app_views.route("/amenities/<amenity_id>", methods=["DELETE"],
