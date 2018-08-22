@@ -3,10 +3,9 @@
 Creating new view for State object
 that handles all default RestFul API actions
 """
-from flask import Flask, jsonify, abort, request
+from flask import jsonify, abort, request
 from api.v1.views import app_views
 from models import storage
-from models import State
 from models import City
 
 
@@ -83,7 +82,7 @@ def post_cities(state_id):
     return (jsonify(add_city.to_dict()), 201)
 
 
-@app_views.route('/cities/<uuid:city_id>', methods=["PUT"],
+@app_views.route('/cities/<city_id>', methods=["PUT"],
                  strict_slashes=False)
 def update_cities(city_id):
     """
