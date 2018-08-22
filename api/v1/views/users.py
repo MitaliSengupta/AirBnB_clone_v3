@@ -49,9 +49,6 @@ def delete_user(user_id):
 def create_user():
     """ Creates a User """
     req = request.get_json()
-    usr_obj = storage.all("User", user_id)
-    if usr_obj is None:
-        abort(404)
     if req is None:
         return (jsonify({'error': 'Not a JSON'}), 400)
     if 'email' not in req:
