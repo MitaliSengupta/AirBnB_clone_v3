@@ -42,7 +42,7 @@ def delete_states(state_id):
     return (jsonify({}), 200)
 
 
-@app_views.route('/states', methods=["POST"])
+@app_views.route('/states/', methods=["POST"])
 def post_states():
     """
     function to add states
@@ -66,9 +66,9 @@ def update_states(state_id):
     """
     function to update states
     """
-    content = request.json()
-    if content is None:
+    if not request.get_json:
         return (jsonify({"error": "Not a JSON"}), 400)
+    content = request.get_json()
 
     set_state = storage.get("State", state_id)
     if set_state is None:
