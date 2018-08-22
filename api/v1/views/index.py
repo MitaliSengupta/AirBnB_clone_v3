@@ -22,7 +22,13 @@ def stats():
     """
     endpoint that retrieves number of obj by type
     """
-    dic = {}
-    for cls in classes:
-        dic[cls] = storage.count(classes[cls])
+    dic = {"amenities": 0, "cities": 0, "places": 0,
+           "reviews": 0, "states": 0, "users": 0}
+    cls = ["Amenity", "City", "Place", "Review", "State", "User"]
+    st = ["amenities", "cities", "places", "reviews", "states", "users"]
+    for c in range(len(cls)):
+        try:
+            dic[st[c]] = storage.count(cls[c])
+        except Exception:
+            continue
     return (jsonify(dic))
