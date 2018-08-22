@@ -23,7 +23,7 @@ def state_city(state_id):
     for k, v in all_cities.items():
         if v.state_id == str(state_id):
             cities.append(v.to_dict())
-    return (jsonify(cities), 200)
+    return (jsonify(cities))
 
 
 @app_views.route("/cities/<city_id>", methods=["GET"],
@@ -32,10 +32,11 @@ def city_all(city_id):
     """
     get cities by id
     """
-    ct = storage.get("City", city_id)
-    if ct is None:
+    try:
+        ct = storage.get("City", city_id)
+        return (jsonify(ct.to_dict()))
+    except Exception:
         abort(404)
-    return (jsonify(ct.to_dict()), 200)
 
 
 @app_views.route('/cities/<city_id>', methods=["DELETE"],
@@ -89,7 +90,7 @@ def update_cities(city_id):
     if not set_city:
         abort(404)
 
-    if not request.get_json():
+    if not request.json:
         return (jsonify({"error": "Not a JSON"}), 400)
 
     content = request.get_json()
