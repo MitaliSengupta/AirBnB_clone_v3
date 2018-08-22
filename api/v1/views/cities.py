@@ -35,7 +35,7 @@ def city_all(city_id):
     ct = storage.get("City", city_id)
     if ct is None:
         abort(404)
-    return (jsonify(ct.to_dict()))
+    return (jsonify(ct.to_dict()), 200)
 
 
 @app_views.route('/cities/<city_id>', methods=["DELETE"],
