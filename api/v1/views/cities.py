@@ -66,8 +66,7 @@ def create_city(state_id):
         abort(404)
 
     if not request.json:
-        abort(400)
-        return jsonify({"error": "Not a JSON"})
+        return jsonify({"error": "Not a JSON"}), 400
     else:
         city_dict = request.get_json()
         if "name" in city_dict:
@@ -77,8 +76,7 @@ def create_city(state_id):
                 setattr(city, k, v)
             city.save()
         else:
-            abort(400)
-            return jsonify({"error": "Missing name"})
+            return jsonify({"error": "Missing name"}), 400
         return jsonify(city.to_dict()), 201
 
 
@@ -97,7 +95,7 @@ def update_city(city_id):
 
     req = request.get_json()
     for k, v in req.items():
-        if k != "id" and k != "created_at" and k != "updated_at":
+        if k is not in ["id", "created_at", "updated_at", "state_id"]:
             setattr(city, k, v)
     city.save()
 
