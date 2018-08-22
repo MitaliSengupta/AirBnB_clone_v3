@@ -9,7 +9,17 @@ from models import storage
 from models import State
 
 
-@app_views.route('/states/', methods=["GET"])
+@app_views.route('/states', methods=["GET"])
+def get_all_states():
+    """
+    gets all states
+    """
+    states = []
+    for v in storage.all("State").values():
+        states.append(v.to_dict())
+    return (jsonify(states))
+
+
 @app_views.route("/states/<state_id>", methods=["GET"])
 def state(state_id=None):
     """
@@ -66,13 +76,14 @@ def update_states(state_id):
     """
     function to update states
     """
-    if not request.get_json:
-        return (jsonify({"error": "Not a JSON"}), 400)
-    content = request.get_json()
-
     set_state = storage.get("State", state_id)
     if set_state is None:
         abort(404)
+
+    if not request.json:
+        return (jsonify({"error": "Not a JSON"}), 400)
+
+    content = request.get_json()
 
     for key, value in content.items():
         if key != "id" or key != "created_at" or key != "updated_at":
