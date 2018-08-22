@@ -16,15 +16,18 @@ def state_city(state_id):
     function to retrieve list of all cities connected to states
     """
     state = storage.get("State", state_id)
-    if state is None:
+    if not state:
         abort(404)
-    cities = state.cities
-    get_cities = [city.to_dict() for city in cities]
-    return (jsonify(get_cities))
+    cities = []
+    all_cities = storage.all("City")
+    for k, v in all_cities.items():
+        if v.state_id == state_id:
+            cities.append(v.to_dict())
+    return (jsonify(cities))
 
 
 @app_views.route("/cities/<city_id>", methods=["GET"])
-def city(city_id):
+def city_all(city_id):
     """
     get cities by id
     """
@@ -56,17 +59,17 @@ def post_cities(state_id):
     """
     function to create a city
     """
-    content = request.get_json()
-    if content is None:
+    state = storage.get("State", state_id)
+    if state is None:
+        abort(404)
+
+    if not request.json:
         return (jsonify({"error": "Not a JSON"}), 400)
+    content = request.get_json()
 
     name = content.get("name")
     if name is None:
         return (jsonify({"error": "Missing name"}), 400)
-
-    state = storage.get("State", state_id)
-    if state is None:
-        abort(404)
 
     add_city = City()
     add_city.state_id = state_id
@@ -81,16 +84,16 @@ def update_cities(city_id):
     """
     function to update City
     """
+    check = ["id", "created_at", "updated_at", "state_id"]
+
     set_city = storage.get("City", city_id)
-    if set_city is None:
+    if not set_city:
         abort(404)
 
     if not request.json:
         return (jsonify({"error": "Not a JSON"}), 400)
 
     content = request.get_json()
-
-    check = ["id", "created_at", "updated_at", "state_id"]
     for key, value in content.items():
         if key not in check:
             setattr(set_city, key, value)
