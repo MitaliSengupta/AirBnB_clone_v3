@@ -9,7 +9,7 @@ from models import storage
 from models import State
 
 
-@app_views.route('/states/', methods=["GET"], strict_slashes=False)
+@app_views.route('/states', methods=["GET"], strict_slashes=False)
 @app_views.route("/states/<state_id>", methods=["GET"], strict_slashes=False)
 def state(state_id=None):
     """
@@ -43,7 +43,7 @@ def delete_states(state_id):
     return (jsonify({}), 200)
 
 
-@app_views.route('/states/', methods=["POST"], strict_slashes=False)
+@app_views.route('/states', methods=["POST"], strict_slashes=False)
 def post_states():
     """
     function to add states
