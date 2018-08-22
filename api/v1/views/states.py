@@ -67,14 +67,14 @@ def update_states(state_id):
     """
     function to update states
     """
+    try:
+        content = request.json()
+    except Exception:
+        return (jsonify({"error": "Not a JSON"}), 400)
+
     set_state = storage.get("State", state_id)
     if set_state is None:
         abort(404)
-
-    if not request.json:
-        return (jsonify({"error": "Not a JSON"}), 400)
-
-    content = request.json()
 
     for key, value in content.items():
         if key != "id" or key != "created_at" or key != "updated_at":
