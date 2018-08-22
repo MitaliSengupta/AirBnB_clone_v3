@@ -59,7 +59,6 @@ def create_amenity():
         return jsonify({"error": "Not a JSON"}), 400
     else:
         amenity_dict = request.get_json()
-        print(amenity_dict)
         if "name" in amenity_dict:
             amenity_name = amenity_dict["name"]
             amenity = Amenity(name=amenity_name)
