@@ -14,15 +14,15 @@ def all_user():
     users = storage.all('User').values()
     for user in users:
         usr_obj.append(user.to_dict())
-    return jsonify(usr_obj)
+    return jsonify(usr_obj), 200
 
 
 @app_views.route('/users/<user_id>', methods=['GET'], strict_slashes=False)
-def indv_user(user_id=None):
+def indv_user(user_id):
     """ Retrieves a User object """
     user = storage.get('User', user_id)
-    if user:
-        return jsonify(user.to_dict())
+    if user is not None:
+        return jsonify(user.to_dict()), 200
     else:
         abort(404)
 
@@ -32,7 +32,7 @@ def delete_user(user_id):
     """ Deletes a User object """
     try:
         del_user = storage.all("User").values()
-        obj = [obje.to_dict() for obje in del_city if obje.id == user_id]
+        obj = [obje.to_dict() for obje in del_user if obje.id == user_id]
         if obj is None:
             abort(404)
         obj.remove(obj[0])
