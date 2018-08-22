@@ -39,7 +39,7 @@ def city_all(city_id):
     return (jsonify(ct.to_dict()))
 
 
-@app_views.route('/cities/<uuid:city_id>', methods=["DELETE"],
+@app_views.route('/cities/<city_id>', methods=["DELETE"],
                  strict_slashes=False)
 def delete_cities(city_id):
     """
@@ -57,7 +57,7 @@ def delete_cities(city_id):
     return (jsonify({}), 200)
 
 
-@app_views.route('/states/<state_id>/cities', methods=["POST"],
+@app_views.route('/states/<uuid:state_id>/cities', methods=["POST"],
                  strict_slashes=False)
 def post_cities(state_id):
     """
