@@ -11,7 +11,7 @@ from models import storage, Review, Place
                  strict_slashes=False)
 def all_reviews(place_id):
     """ Retrieves the list of all Review objects of a Place """
-    place_obj = storage.get('Place', place_id)
+    place_obj = storage.all('Place', place_id)
     if place_id is None or place_obj is None:
         abort(404)
     else:
@@ -73,8 +73,7 @@ def update_review(review_id):
     if req is None:
         abort(400, 'Not a JSON')
     for key, val in req.items():
-        if key not in 'id' and key not in 'created_at' and key not in 'user_id'\
-           and key not in 'place_id' and key not in 'updated_at':
+        if key not in ['id', 'created_at', 'user_id', 'place_id', 'updated_at']:
             setattr(rev_obj, key, val)
     rev_obj.save()
     return (jsonify(rev_obj.to_dict()), 200)
