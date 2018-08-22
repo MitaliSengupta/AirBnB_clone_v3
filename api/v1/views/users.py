@@ -14,7 +14,7 @@ def all_user():
     users = storage.all('User').values()
     for user in users:
         usr_obj.append(user.to_dict())
-    return jsonify(usr_obj)
+    return (jsonify(usr_obj), 200)
 
 
 @app_views.route('/users/<user_id>', methods=['GET'], strict_slashes=False)
