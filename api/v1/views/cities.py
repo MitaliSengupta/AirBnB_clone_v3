@@ -23,7 +23,7 @@ def state_city(state_id):
     for k, v in all_cities.items():
         if v.state_id == str(state_id):
             cities.append(v.to_dict())
-    return (jsonify(cities))
+    return (jsonify(cities), 200)
 
 
 @app_views.route("/cities/<city_id>", methods=["GET"],
@@ -65,21 +65,16 @@ def post_cities(state_id):
     state = storage.get("State", state_id)
     if state is None:
         abort(404)
-
-    if not request.json:
-        return (jsonify({"error": "Not a JSON"}), 400)
     content = request.get_json()
-
-    name = content.get("name")
-    if name is None:
+    if not content:
+        return (jsonify({"error": "Not a JSON"}), 400)
+    if "name" not in content:
         return (jsonify({"error": "Missing name"}), 400)
+    content['state_id'] = state.id
+    post_city = City(**content)
+    post_city.save()
 
-    add_city = City()
-    add_city.state_id = state_id
-    add_city.name = name
-    add_city.save()
-
-    return (jsonify(add_city.to_dict()), 201)
+    return (jsonify(post_city.to_dict()), 201)
 
 
 @app_views.route('/cities/<city_id>', methods=["PUT"],
@@ -94,7 +89,7 @@ def update_cities(city_id):
     if not set_city:
         abort(404)
 
-    if not request.json:
+    if not request.get_json():
         return (jsonify({"error": "Not a JSON"}), 400)
 
     content = request.get_json()
