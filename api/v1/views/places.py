@@ -12,12 +12,12 @@ from models import storage, Place, City, User
 def all_place(city_id):
     """ Retrieves the list of all Place objects of a City """
     places_obj = []
-    city_obj = storage.all("City", city_id)
-    if city_obj:
-        abort(404)
-    for city in storage.all("Place").values():
-        if city_id == city.city_id:
+    city_obj = storage.get('City', city_id)
+    if city_id:
+        for city in city_obj.places:
             places_obj.append(city.to_dict())
+    else:
+        abort(404)
     return jsonify(places_obj)
 
 
@@ -48,7 +48,7 @@ def create_place(city_id):
     """ Creates a Place """
     req = request.get_json()
     city_obj = storage.get("City", city_id)
-    user_obj = storage.get("User", req['user_id'])
+    user_obj = storage.get("User", data['user_id'])
     if req is None:
         return (jsonify({'error': 'Not a JSON'}), 400)
     if city_obj is None:
@@ -58,6 +58,7 @@ def create_place(city_id):
     if 'name' not in req:
         return (jsonify({'error': 'Missing name'}), 400)
     if user_obj:
+        req['city_id'] == city_id
         new_place = Place(**req)
         new_place.save()
         return (jsonify(new_place.to_dict()), 201)
@@ -76,7 +77,8 @@ def update_place(place_id):
         abort(404)
     else:
         for key, val in req.items():
-            if key not in ['id', 'created_at', 'user_id', 'city_id']:
+            if key not in 'id' and key not in 'created_at' and\
+               key not in 'user_id' and key not in 'city_id':
                 setattr(place_obj, key, val)
     place_obj.save()
     return (jsonify(my_place.to_dict()), 200)
