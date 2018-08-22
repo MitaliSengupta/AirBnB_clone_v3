@@ -28,15 +28,21 @@ def indv_user(user_id=None):
 
 
 @app_views.route('/users/<user_id>', methods=['DELETE'], strict_slashes=False)
-def del_user(user_id=None):
+def delete_user(user_id):
     """ Deletes a User object """
-    user = storage.all('User').value()
-    if user is None:
+    try:
+        del_user = storage.all("User").values()
+        obj = [obje.to_dict() for obje in del_city if obje.id == user_id]
+        if obj is None:
+            abort(404)
+        obj.remove(obj[0])
+        for obje in del_user:
+            if obje.id == user_id:
+                storage.delete(obje)
+                storage.save()
+        return (jsonify({}), 200)
+    except Exception:
         abort(404)
-    for erase in user:
-        if erase.id == user_id:
-            storage.delete(user)
-            return (jsonify({}), 200)
 
 
 @app_views.route('/users', methods=['POST'], strict_slashes=False)
