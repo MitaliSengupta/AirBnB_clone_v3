@@ -49,6 +49,7 @@ def delete_city(city_id):
     try:
         city = storage.get("City", city_id)
         storage.delete(city)
+        storage.save()
         return jsonify({}), 200
     except Exception:
         abort(404)
