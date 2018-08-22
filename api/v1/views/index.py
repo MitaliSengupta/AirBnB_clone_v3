@@ -1,8 +1,9 @@
-#!/usr/bin/env python3
+#!/usr/bin/python3
 """
 an endpoint that retrieves the number of each objects by type
 """
-from flask import jsonify, Blueprint
+from flask import jsonify
+from models import classes
 from models import storage
 from api.v1.views import app_views
 
@@ -21,10 +22,7 @@ def stats():
     """
     endpoint that retrieves number of obj by type
     """
-    stat = {"amenities": storage.count("Amenity"),
-            "cities": storage.count("City"),
-            "places": storage.count("Place"),
-            "reviews": storage.count("Review"),
-            "states": storage.count("State"),
-            "users": storage.count("User")}
-    return (jsonify(stat))
+    dic = {}
+    for cls in classes:
+        dic[cls] = storage.count(classes[cls])
+    return (jsonify(dic))
