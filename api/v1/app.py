@@ -10,22 +10,22 @@ from api.v1.views import app_views
 
 
 app = Flask(__name__)
-app.url_map.strict_slashes = False
+app.config['JSONIFY_PRETTYPRINT_REGULAR'] = True
 app.register_blueprint(app_views)
 cors = CORS(app, resources={r"/*": {'origins': ['0.0.0.0']}})
 
 
 @app.teardown_appcontext
-def teardown(exception):
+def teardown_appcontext(self):
     """ closes down current session """
     storage.close()
 
 
 @app.errorhandler(404)
-def not_found(error):
+def page_not_found(error):
     """
-       a handler for 404 errors that returns a
-       JSON-formatted 404 status code response
+    a handler for 404 errors that returns a
+    JSON-formatted 404 status code response
     """
     return (jsonify({"error": "Not found"}), 404)
 

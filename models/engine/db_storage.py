@@ -83,7 +83,6 @@ class DBStorage:
         Session = scoped_session(factory)
         self.__session = Session()
 
-
     def get(self, cls, id):
         """" A method to retrieve one object """
         grab_obj = self.all(cls).values()

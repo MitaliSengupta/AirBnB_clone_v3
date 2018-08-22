@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/python3
 """"
 Review Module
 """
@@ -20,6 +20,7 @@ def all_reviews(place_id):
             rev_obj.append(rev.to_dict())
     return jsonify(rev_obj)
 
+
 @app_views.route('/reviews/<review_id>', methods=['GET'], strict_slashes=False)
 def indv_review(review_id):
     """ Retrieves a Review object """
@@ -28,6 +29,7 @@ def indv_review(review_id):
         abort(404)
     if review_obj:
         return jsonify(review.to_dict)
+
 
 @app_views.route('/reviews/<review_id>', methods=['DELETE'],
                  strict_slashes=False)
@@ -39,6 +41,7 @@ def del_review(review_id):
     if review_obj:
         storage.delete(review_obj)
         return (jsonify({}), 200)
+
 
 @app_views.route('/places/<place_id>/reviews', methods=['POST'],
                  strict_slashes=False)
@@ -58,6 +61,7 @@ def create_review(place_id):
     new_rev = Review(**req)
     new_rev.save()
     return (jsonify(new_rev.to_dict()), 201)
+
 
 @app_views.route('/reviews/<review_id>', methods=['PUT'], strict_slashes=False)
 def update_review(review_id):

@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/python3
 """
 Place Module
 """
@@ -20,6 +20,7 @@ def all_place(city_id):
         abort(404)
     return jsonify(places_obj)
 
+
 @app_views.route('/places/<place_id>', methods=['GET'], strict_slashes=False)
 def indv_place(place_id):
     """ Retrieves a Place object """
@@ -27,6 +28,7 @@ def indv_place(place_id):
     if place_obj is None or place_id is None:
         abort(404)
     return jsonify(place_obj.to_dict())
+
 
 @app_views.route('/places/<place_id>', methods=['DELETE'],
                  strict_slashes=False)
@@ -38,6 +40,7 @@ def del_place(place_id=None):
     place_obj.delete()
     storage.save()
     return (jsonify({}), 200)
+
 
 @app_views.route('/cities/<city_id>/places', methods=['POST'],
                  strict_slashes=False)
@@ -62,12 +65,13 @@ def create_place(city_id):
     else:
         abort(404)
 
+
 @app_views.route('/places/<place_id>', methods=['PUT'], strict_slashes=False)
 def update_place(place_id):
     """ Updates a Place object """
     req = request.get_json()
     place_obj = storage.get("Place", place_id)
-    if  req is None:
+    if req is None:
         return (jsonify({'error': "Not a JSON"}), 400)
     if place_obj is None:
         abort(404)

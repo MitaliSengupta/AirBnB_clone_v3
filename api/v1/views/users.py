@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/python3
 """
 User Module
 """
@@ -16,6 +16,7 @@ def all_user():
         usr_obj.append(user.to_dict())
     return jsonify(usr_obj)
 
+
 @app_views.route('/users/<user_id>', methods=['GET'], strict_slashes=False)
 def indv_user(user_id=None):
     """ Retrieves a User object """
@@ -24,6 +25,7 @@ def indv_user(user_id=None):
         return jsonify(user.to_dict())
     else:
         abort(404)
+
 
 @app_views.route('/users/<user_id>', methods=['DELETE'], strict_slashes=False)
 def del_user(user_id=None):
@@ -35,6 +37,7 @@ def del_user(user_id=None):
         if erase.id == user_id:
             storage.delete(user)
             return (jsonify({}), 200)
+
 
 @app_views.route('/users', methods=['POST'], strict_slashes=False)
 def create_user():
@@ -53,6 +56,7 @@ def create_user():
         new_user.save()
         return (jsonify(new_user.to_dict()), 201)
 
+
 @app_views.route('/users/<user_id>', methods=['PUT'], strict_slashes=False)
 def update_user(user_id=None):
     """ Updates a User object """
@@ -64,7 +68,7 @@ def update_user(user_id=None):
         abort(404)
     for key, value in req.iterms():
         if key not in 'id' and key not in 'created_at' and\
-        key not in 'updated_at' and key not in 'email':
+                key not in 'updated_at' and key not in 'email':
             setattr(user_obj, key, value)
     user_obj.save()
     return (jsonify(user_obj.to_dict()), 200)
