@@ -66,7 +66,7 @@ def post_cities(state_id):
         return (jsonify({"error": "Not a JSON"}), 400)
     if "name" not in content:
         return (jsonify({"error": "Missing name"}), 400)
-    content['state_id'] = state.id
+    content['state_id'] = state_id
     post_city = City(**content)
     post_city.save()
 
