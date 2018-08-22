@@ -79,4 +79,4 @@ def update_states(state_id):
             setattr(set_state, key, value)
 
     set_state.save()
-    return (jsonify(set_state.to_dict(), 200)
+    return (jsonify(set_state.to_dict()), 200)
