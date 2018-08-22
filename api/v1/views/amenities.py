@@ -22,7 +22,7 @@ def all_amenities_by_state():
     return jsonify(amenities_list)
 
 
-@app_views.route('/amenities/<uuid:amenity_id>', methods=['GET'],
+@app_views.route('/amenities/<amenity_id>', methods=['GET'],
                  strict_slashes=False)
 def amenity_by_id(amenity_id):
     '''
