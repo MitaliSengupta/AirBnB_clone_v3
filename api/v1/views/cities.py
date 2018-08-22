@@ -23,7 +23,7 @@ def state_city(state_id):
     for k, v in all_cities.items():
         if v.state_id == str(state_id):
             cities.append(v.to_dict())
-    return (jsonify(cities))
+    return (jsonify(cities), 200)
 
 
 @app_views.route("/cities/<city_id>", methods=["GET"],
@@ -32,11 +32,10 @@ def city_all(city_id):
     """
     get cities by id
     """
-    try:
-        ct = storage.get("City", city_id)
-        return (jsonify(ct.to_dict()))
-    except Exception:
+    ct = storage.get("City", city_id)
+    if ct is None:
         abort(404)
+    return (jsonify(ct.to_dict()), 200)
 
 
 @app_views.route('/cities/<city_id>', methods=["DELETE"],
@@ -45,9 +44,15 @@ def delete_cities(city_id):
     """
     function to delete city based on id
     """
-    city = storage.get('City', city_id)
-    storage.delete(city)
-    storage.save()
+    del_city = storage.all("City").values()
+    obj = [obje.to_dict() for obje in del_city if obje.id == city_id]
+    if obj is None:
+        abort(404)
+    obj.remove(obj[0])
+    for obje in del_city:
+        if obje.id == city_id:
+            storage.delete(obje)
+            storage.save()
     return (jsonify({}), 200)
 
 
@@ -78,14 +83,19 @@ def update_cities(city_id):
     """
     function to update City
     """
+    check = ["id", "created_at", "updated_at", "state_id"]
+
     set_city = storage.get("City", city_id)
-    if set_city is None:
+    if not set_city:
         abort(404)
-    if not request.json():
+
+    if not request.get_json():
         return (jsonify({"error": "Not a JSON"}), 400)
+
     content = request.get_json()
-    for k, v in content.items():
-        if key not in ["id", "created_at", "updated_at", "state_id"]:
-            setattr(set_city, k,v )
+    for key, value in content.items():
+        if key not in check:
+            setattr(set_city, key, value)
+
     set_city.save()
     return (jsonify(set_city.to_dict()), 200)
