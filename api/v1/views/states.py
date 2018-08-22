@@ -19,6 +19,7 @@ def get_all_states():
         states.append(v.to_dict())
     return (jsonify(states))
 
+
 @app_views.route("/states/<state_id>", methods=["GET"])
 def state(state_id=None):
     """
