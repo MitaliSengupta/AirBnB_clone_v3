@@ -22,12 +22,12 @@ class FileStorage:
             return self.__objects
 
         if cls is not None and cls != "":
+            dic = {}
             for k, v in self.__objects.items():
-                if cls == k.split(".")[0]:
-                    new_dict[k] = v
-            return new_dict
-        else:
-            return self.__objects
+                name = k.split(".")
+                if name[0] in str(cls):
+                    dic[k] = v
+            return (dic)
 
     def new(self, obj):
         '''
@@ -75,16 +75,19 @@ class FileStorage:
 
     def get(self, cls, id):
         """" A method to retrieve one object """
-        grab_obj = self.all(cls).values()
-        for obj in grab_obj:
-            if obj.id == id:
-                return obj
-        return None
+        grab_obj = self.all()
+        fm = "{}.{}".format(str(cls), str(id))
+        res = grab_obj.get(fm)
+        return (res)
 
     def count(self, cls=None):
         """ A method to count the number of objects in storage """
-        num_obj = self.all(cls)
-        return len(num_obj)
+        if cls is None:
+            p = None
+        else:
+            p = str(cls)
+        obj = self.all(p)
+        return (len(obj))
 
     def close(self):
         '''
