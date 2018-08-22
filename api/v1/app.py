@@ -12,11 +12,11 @@ from api.v1.views import app_views
 app = Flask(__name__)
 app.url_map.strict_slashes = False
 app.register_blueprint(app_views)
-cors = CORS(app, resources={'/*': {'origins': '0.0.0.0'}})
+cors = CORS(app, resources={r"/*": {'origins': ['0.0.0.0']}})
 
 
 @app.teardown_appcontext
-def teardown(error):
+def teardown(exception):
     """ closes down current session """
     storage.close()
 
@@ -27,7 +27,7 @@ def not_found(error):
        a handler for 404 errors that returns a
        JSON-formatted 404 status code response
     """
-    return make_response(jsonify({"error": "Not found"}), 404)
+    return (jsonify({"error": "Not found"}), 404)
 
 
 if __name__ == "__main__":
