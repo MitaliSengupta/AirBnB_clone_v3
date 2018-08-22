@@ -46,9 +46,12 @@ def delete_user(user_id):
 
 
 @app_views.route('/users', methods=['POST'], strict_slashes=False)
-def create_user():
+def create_user(user_id):
     """ Creates a User """
     req = request.get_json()
+    usr_st = storage.get("User", user_id)
+    if usr_st is None:
+        abort(404)
     if req is None:
         return (jsonify({'error': 'Not a JSON'}), 400)
     if 'email' not in req:
@@ -56,11 +59,10 @@ def create_user():
     if 'password' not in req:
         return (jsonify({'error': 'Missing password'}), 400)
     if 'email' in req and 'password' in req:
-        new_user = User()
-        for key, value in req.items():
-            setattr(new_user, key, value)
-        new_user.save()
-        return (jsonify(new_user.to_dict()), 201)
+        content['user_id'] = user.id
+        post_user = User(**req)
+        post_user.save()
+        return (jsonify(post_user.to_dict()), 201)
 
 
 @app_views.route('/users/<user_id>', methods=['PUT'], strict_slashes=False)
