@@ -25,7 +25,8 @@ def state(state_id=None):
     abort(404)
 
 
-@app_views.route('/states/<state_id>', methods=["DELETE"], strict_slashes=False)
+@app_views.route('/states/<state_id>', methods=["DELETE"],
+                 strict_slashes=False)
 def delete_states(state_id):
     """
     function to delete state based on id
@@ -68,7 +69,7 @@ def update_states(state_id):
     """
     try:
         content = request.get_json()
-    except:
+    except Exception:
         return (jsonify({"error": "Not a JSON"}), 400)
 
     set_state = storage.get("State", state_id)
