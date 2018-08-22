@@ -9,16 +9,7 @@ from models import storage
 from models import State
 
 
-@app_views.route('/states', methods=["GET"], strict_slashes=False)
-def get_all_states():
-    """
-    prints all states
-    """
-    states = []
-    for v in storage.all("State").values():
-        states.append(v.to_dict())
-    return (jsonify(states))
-
+@app_views.route('/states/', methods=["GET"], strict_slashes=False)
 @app_views.route("/states/<state_id>", methods=["GET"], strict_slashes=False)
 def state(state_id=None):
     """
@@ -52,7 +43,7 @@ def delete_states(state_id):
     return (jsonify({}), 200)
 
 
-@app_views.route('/states', methods=["POST"], strict_slashes=False)
+@app_views.route('/states/', methods=["POST"], strict_slashes=False)
 def post_states():
     """
     function to add states
@@ -76,18 +67,18 @@ def update_states(state_id):
     """
     function to update states
     """
-    try:
-        content = request.get_json()
-    except Exception:
-        return (jsonify({"error": "Not a JSON"}), 400)
-
     set_state = storage.get("State", state_id)
     if set_state is None:
         abort(404)
+
+    if not request.json:
+        return (jsonify({"error": "Not a JSON"}), 400)
+
+    content = request.json()
 
     for key, value in content.items():
         if key != "id" or key != "created_at" or key != "updated_at":
             setattr(set_state, key, value)
 
     set_state.save()
-    return jsonify(set_state.to_dict())
+    return jsonify(set_state.to_dict(), 200)
