@@ -44,16 +44,12 @@ def delete_cities(city_id):
     """
     function to delete city based on id
     """
-    del_city = storage.all("City").values()
-    obj = [obje.to_dict() for obje in del_city if obje.id == city_id]
-    if obj is None:
+    try:
+        storage.delete(storage.get("City", city_id))
+        storage.save()
+        return (jsonify({}), 200)
+    except Exception:
         abort(404)
-    obj.remove(obj[0])
-    for obje in del_city:
-        if obje.id == city_id:
-            storage.delete(obje)
-            storage.save()
-    return (jsonify({}), 200)
 
 
 @app_views.route('/states/<state_id>/cities', methods=["POST"],
