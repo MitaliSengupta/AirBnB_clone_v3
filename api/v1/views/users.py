@@ -55,6 +55,9 @@ def create_user():
         return (jsonify({'error': 'Missing email'}), 400)
     if 'password' not in req:
         return (jsonify({'error': 'Missing password'}), 400)
+    usr_obj = storage.all("User", user_id)
+    if usr_obj is None:
+        abort(404)
     if 'email' in req and 'password' in req:
         new_user = User()
         for key, value in req.items():
