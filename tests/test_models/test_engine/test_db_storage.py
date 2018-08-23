@@ -77,7 +77,7 @@ class test_DBStorage(unittest.TestCase):
         storage.reload()
         result = storage.all("")
         self.assertIsInstance(result, dict)
-        self.assertEqual(len(result), 0)
+        self.assertEqual(len(result), 3)
         new = User(email="adriel@hbtn.com", password="abc")
         console = self.create()
         console.onecmd("create State name=California")
@@ -123,27 +123,21 @@ class test_DBStorage(unittest.TestCase):
         self.assertTrue(isinstance(storage, DBStorage))
 
     def test_get_db_storage(self):
-        """
-        Testing the get method
-        """
-        new_state = State(name="California")
-        new_state.save()
-        self.assertIs(new_state, storage.get("State", new_state.id))
-        self.assertIs(None, storage.get("State", "brrr"))
-        with self.assertRaises(Exception) as te:
-            storage.get("test", "test")
+        """This test the get method in db_storage"""
+        storage.reload()
+        new_state = State(name="NewYork")
         storage.new(new_state)
         first_state_id = list(storage.all("State").values())[0].id
         self.assertEqual(type(storage.get("State", first_state_id)), State)
 
     def test_count_db_storage(self):
-        """
-        Testing the get method in db_storage
-        """
+        """This test the get method in db_storage"""
         storage.reload()
-        initial_count = storage.count()
-        with self.assertRaises(Exception) as te:
-            storage.count("blah")
+        counter = storage.count("State")
+        state = State(name="Colorado")
+        state.save()
+        counter_2 = storage.count("State")
+        self.assertTrue(counter + 1, counter_2)
         result = storage.all("")
         count = storage.count(None)
         self.assertEqual(len(result), count)
@@ -151,27 +145,45 @@ class test_DBStorage(unittest.TestCase):
         count = storage.count("State")
         self.assertEqual(len(result), count)
 
-    def test_get_count_cls(self):
+    def test_get_db_storage(self):
         '''
-            Tests the count method in db_storage with class name given
+        Tests the get method in db storage
         '''
-        all_obj = storage.all('State')
-        count_all_obj = storage.count('State')
-        self.assertEqual(len(all_obj), count_all_obj)
-
-    def test_get_method(self):
-        '''
-            Tests the get method
-        '''
-        state = State(name="Texas")
-        state.save()
+        storage.reload()
+        state = State(name="Cali")
         state_id = state.id
-        get_state = storage.get('State', state_id)
-        self.assertEqual(state, get_state)
+        state.save()
+        state_obj = storage.get("State", state_id)
+        self.assertEqual(state_obj, state)
 
-    def test_get_method_cls(self):
+    def test_count_db_storage_works(self):
         '''
-            Tests the get method without instance id
+        Tests if the count method in db storage is working
         '''
-        get_state = storage.get('State', 'jlk124343')
-        self.assertEqual(get_state, None)
+        storage.reload()
+        all_dict = storage.all()
+        all_count = len(all_dict)
+        count = storage.count()
+        self.assertEqual(all_count, count)
+
+    def test_count_db_storage_no_class(self):
+        '''
+        Tests the count method in db storage when no class is passed
+        '''
+        storage.reload()
+        first_count = storage.count()
+        state = State(name="Colorado")
+        state.save()
+        second_count = storage.count()
+        self.assertTrue(first_count + 1, second_count)
+
+    def test_count_db_storage_class(self):
+        '''
+        Tests the count method in db storage when passing a class
+        '''
+        storage.reload()
+        first_count = storage.count("State")
+        state = State(name="Colorado")
+        state.save()
+        second_count = storage.count("State")
+        self.assertTrue(first_count + 1, second_count)
