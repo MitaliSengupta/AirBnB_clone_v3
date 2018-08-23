@@ -38,7 +38,7 @@ class DBStorage:
         '''
         db_dict = {}
 
-        if cls is not None and cls != "":
+        if cls is not None and cls is not "":
             objs = self.__session.query(models.classes[cls]).all()
             for obj in objs:
                 key = "{}.{}".format(obj.__class__.__name__, obj.id)
@@ -84,18 +84,24 @@ class DBStorage:
         self.__session = Session()
 
     def get(self, cls, id):
-        """" A method to retrieve one object """
+        """" A method to retrieve one object
         grab_obj = self.all(cls).values()
         for obj in grab_obj:
             if obj.id == str(id):
                 return obj
         return None
+        """
+        grab_obj = models.storage.all(cls)
+        for k, v in grab_obj.items():
+            getstr = cls + '.' + id
+            if k == getstr:
+                return (v)
+        return (None)
+
 
     def count(self, cls=None):
         """ A method to count the number of objects in storage """
-        if cls is None:
-            return (0)
-        num_obj = self.all(cls)
+        num_obj = models.storage.all(cls)
         return len(num_obj)
 
     def close(self):
