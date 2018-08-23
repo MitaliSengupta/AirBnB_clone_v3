@@ -78,12 +78,12 @@ def update_review(review_id):
     rev_obj = storage.get('Review', review_id)
     if not rev_obj:
         abort(404)
-    if not request.json:
+    if not request.get_json():
         return jsonify({"error": "Not a JSON"}), 400
     bypass = ["id", "place_id", "user_id", "created_at", "updated_at"]
     req = request.get_json()
     for key, val in req.items():
         if key not in bypass:
-            setattr(rev_obj, key, value)
+            setattr(rev_obj, key, val)
     rev_obj.save()
     return (jsonify(rev_obj.to_dict()), 200)
