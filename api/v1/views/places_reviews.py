@@ -12,7 +12,7 @@ from models import storage, Review, Place
 def all_reviews(place_id):
     """ Retrieves the list of all Review objects of a Place """
     place_obj = storage.get('Place', place_id)
-    if place_id is None:
+    if place_obj is None:
         abort(404)
     rev_obj = []
     rev_str = storage.all("Review").items()
