@@ -36,12 +36,13 @@ def indv_review(review_id):
                  strict_slashes=False)
 def del_review(review_id):
     """ Deletes a Review object """
-    review_obj = storage.get("Review", review_id)
-    if review_obj is None:
+    try:
+        review_obj = storage.get("Review", review_id)
+        review_obj.delete()
+        storage.save()
+        return jsonify({}), 200
+    except Exception:
         abort(404)
-    review_obj.delete()
-    storage.save()
-    return jsonify({}), 200
 
 
 @app_views.route('/places/<place_id>/reviews', methods=['POST'],
@@ -76,9 +77,9 @@ def create_review(place_id):
 def update_review(review_id):
     """ Updates a Review object """
     rev_obj = storage.get('Review', review_id)
-    if rev_obj is None:
+    if not rev_obj:
         abort(404)
-    if not request.get_json():
+    if not request.json:
         return jsonify({"error": "Not a JSON"}), 400
     bypass = ["id", "place_id", "user_id", "created_at", "updated_at"]
     req = request.get_json()
