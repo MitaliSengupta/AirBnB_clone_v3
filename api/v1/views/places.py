@@ -33,14 +33,14 @@ def indv_place(place_id):
 
 @app_views.route('/places/<place_id>', methods=['DELETE'],
                  strict_slashes=False)
-def del_place(place_id=None):
+def del_place(place_id):
     """ Deletes a Place object """
-    try:
-        storage.delete(storage.get("Place", place_id))
-        storage.save()
-        return jsonify({}), 200
-    except Exception:
+    place_obj = storage.get("Place", place_id)
+    if place_obj is None:
         abort(404)
+    place_obj.delete()
+    storage.save()
+    return jsonify({}), 200
 
 
 @app_views.route('/cities/<city_id>/places', methods=['POST'],
