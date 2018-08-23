@@ -18,16 +18,17 @@ def all_place(city_id):
     for key, value in storage.all("Place").items():
         if value.city_id == city_id:
             places_obj.append(value.to_dict())
-    return jsonify(places_obj), 200
+    return jsonify(places_obj)
 
 
 @app_views.route('/places/<place_id>', methods=['GET'], strict_slashes=False)
 def indv_place(place_id):
     """ Retrieves a Place object """
-    place_obj = storage.get("Place", place_id)
-    if place_obj is None:
+    try:
+        place_obj = storage.get('Place', place_id)
+        return jsonify(place_obj.to_dict())
+    except Exception:
         abort(404)
-    return jsonify(place.to_dict()), 200
 
 
 @app_views.route('/places/<place_id>', methods=['DELETE'],
@@ -46,24 +47,25 @@ def del_place(place_id):
                  strict_slashes=False)
 def create_place(city_id):
     """ Creates a Place """
-    req = request.get_json()
     city_obj = storage.get("City", city_id)
-    user_obj = storage.get("User", req['user_id'])
     if city_obj is None:
         abort(404)
+    req = request.json
     if not req:
-        return (jsonify({'error': 'Not a JSON'}), 400)
-    if 'user_id' not in req:
-        return (jsonify({'error': 'Missing user_id'}), 400)
+        return jsonify({"error": "Not a JSON"}), 400
+    p_req = request.get_json()
+    if "user_id" not in p_req:
+        return jsonify({"error": "Missing user_id"}), 400
+    user_obj = storage.get("User", p_req["user_id"])
     if user_obj is None:
         abort(404)
-    if 'name' not in req:
-        return (jsonify({'error': 'Missing name'}), 400)
+        if "name" not in p_req:
+        return jsonify({"error": "Missing name"}), 400
     else:
-        new_user_id = req["user_id"]
-        new_name = req["name"]
+        new_user_id = place_dict["user_id"]
+        new_name = place_dict["name"]
         new_place = Place(user_id=new_user_id, name=new_name, city_id=city_id)
-        for key, value in req.items():
+        for key, value in place_dict.items():
             setattr(new_place, key, value)
         new_place.save()
         return jsonify(new_place.to_dict()), 201
@@ -82,4 +84,4 @@ def update_place(place_id):
         if key not in ['id', 'created_at', 'user_id', 'city_id']:
             setattr(place_obj, key, val)
     place_obj.save()
-    return (jsonify(my_place.to_dict()), 200)
+    return (jsonify(place_obj.to_dict()), 200)
