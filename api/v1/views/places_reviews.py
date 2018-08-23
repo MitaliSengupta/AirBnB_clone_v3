@@ -78,7 +78,12 @@ def update_review(review_id):
     if not req:
         return jsonify({"error": "Not a JSON"}), 400
     for key, val in req.items():
-        if key not in ['id', 'created_at', 'user_id', 'place_id', 'updated_at']:
+        if key not in [
+            'id',
+            'created_at',
+            'user_id',
+            'place_id',
+                'updated_at']:
             setattr(rev_obj, key, val)
     rev_obj.save()
     return (jsonify(rev_obj.to_dict()), 200)
