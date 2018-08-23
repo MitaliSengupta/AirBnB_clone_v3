@@ -18,17 +18,16 @@ def all_place(city_id):
     for key, value in storage.all("Place").items():
         if value.city_id == city_id:
             places_obj.append(value.to_dict())
-    return jsonify(places_obj)
+    return jsonify(places_obj), 200
 
 
 @app_views.route('/places/<place_id>', methods=['GET'], strict_slashes=False)
 def indv_place(place_id):
     """ Retrieves a Place object """
-    try:
-        place_obj = storage.get('Place', place_id)
-        return jsonify(place_obj.to_dict())
-    except Exception:
+    place_obj = storage.get("Place", place_id)
+    if place_obj is None:
         abort(404)
+    return jsonify(place.to_dict()), 200
 
 
 @app_views.route('/places/<place_id>', methods=['DELETE'],
@@ -73,14 +72,13 @@ def create_place(city_id):
 @app_views.route('/places/<place_id>', methods=['PUT'], strict_slashes=False)
 def update_place(place_id):
     """ Updates a Place object """
-    req = request.json()
-    p_req = request.get_json()
+    req = request.get_json()
     place_obj = storage.get("Place", place_id)
-    if place_obj is None:
-        abort(404)
     if not req:
         return (jsonify({'error': "Not a JSON"}), 400)
-    for key, val in p_req.items():
+    if place_obj is None:
+        abort(404)
+    for key, val in req.items():
         if key not in ['id', 'created_at', 'user_id', 'city_id']:
             setattr(place_obj, key, val)
     place_obj.save()
