@@ -36,7 +36,6 @@ class User(BaseModel, Base):
         """
         return (self.pwd)
 
-
     @password.setter
     def password(self, pssw):
         """
