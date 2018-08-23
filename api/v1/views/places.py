@@ -24,8 +24,8 @@ def all_place(city_id):
 def indv_place(place_id):
     """ Retrieves a Place object """
     try:
-    place_obj = storage.get('Place', place_id)
-    return jsonify(place_obj.to_dict())
+        place_obj = storage.get('Place', place_id)
+        return jsonify(place_obj.to_dict())
     except Exception:
         abort(404)
 
