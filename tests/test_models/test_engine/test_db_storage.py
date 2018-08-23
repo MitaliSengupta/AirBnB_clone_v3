@@ -123,18 +123,55 @@ class test_DBStorage(unittest.TestCase):
         self.assertTrue(isinstance(storage, DBStorage))
 
     def test_get_db_storage(self):
-        """This test the get method in db_storage"""
-        new_state = State(name="NewYork")
+        """
+        Testing the get method
+        """
+        new_state = State(name="California")
+        new_state.save()
+        self.assertIs(new_state, storage.get("State", new_state.id))
+        self.assertIs(None, storage.get("State", "brrr"))
+        with self.assertRaises(Exception) as te:
+            storage.get("test", "test")
         storage.new(new_state)
         first_state_id = list(storage.all("State").values())[0].id
         self.assertEqual(type(storage.get("State", first_state_id)), State)
 
     def test_count_db_storage(self):
-        """This test the get method in db_storage"""
+        """
+        Testing the get method in db_storage
+        """
         storage.reload()
+        initial_count = storage.count()
+        with self.assertRaises(Exception) as te:
+            storage.count("blah")
         result = storage.all("")
         count = storage.count(None)
         self.assertEqual(len(result), count)
         result = storage.all("State")
         count = storage.count("State")
         self.assertEqual(len(result), count)
+
+    def test_get_count_cls(self):
+        '''
+            Tests the count method in db_storage with class name given
+        '''
+        all_obj = storage.all('State')
+        count_all_obj = storage.count('State')
+        self.assertEqual(len(all_obj), count_all_obj)
+
+    def test_get_method(self):
+        '''
+            Tests the get method
+        '''
+        state = State(name="Texas")
+        state.save()
+        state_id = state.id
+        get_state = storage.get('State', state_id)
+        self.assertEqual(state, get_state)
+
+    def test_get_method_cls(self):
+        '''
+            Tests the get method without instance id
+        '''
+        get_state = storage.get('State', 'jlk124343')
+        self.assertEqual(get_state, None)
