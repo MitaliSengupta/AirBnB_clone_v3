@@ -29,7 +29,7 @@ def indv_review(review_id):
     if rev_obj is None:
         abort(404)
     else:
-        return jsonify(rev_obj.to_dict(), 200)
+        return jsonify(rev_obj.to_dict())
 
 
 @app_views.route('/reviews/<review_id>', methods=['DELETE'],
