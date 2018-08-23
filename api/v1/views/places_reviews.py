@@ -15,18 +15,21 @@ def all_reviews(place_id):
     if place_id is None:
         abort(404)
     rev_obj = []
-    for rev in place_obj.reviews:
-        rev_obj.append(rev.to_dict())
+    rev_str = storage.all("Review").items()
+    for key, value in rev_str:
+        if value.place_id == place_id:
+            rev_obj.append(value.to_dict())
     return jsonify(rev_obj)
 
 
 @app_views.route('/reviews/<review_id>', methods=['GET'], strict_slashes=False)
 def indv_review(review_id):
     """ Retrieves a Review object """
-    review_obj = storage.get('Review', review_id)
-    if review_obj is None:
+    try:
+        rev_obj = storage.get("Review", review_id)
+        return jsonify(rev_obj.to_dict())
+    except Exception:
         abort(404)
-    return jsonify(review_obj.to_dict)
 
 
 @app_views.route('/reviews/<review_id>', methods=['DELETE'],
