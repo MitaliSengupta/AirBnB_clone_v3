@@ -17,7 +17,7 @@ def all_reviews(place_id):
     rev_obj = []
     rev_str = storage.all("Review")
     for key, value in rev_str.items():
-        if value.place_id == place_id:
+        if value.place_id == str(place_id):
             rev_obj.append(value.to_dict())
     return jsonify(rev_obj)
 
@@ -52,22 +52,21 @@ def create_review(place_id):
     place_obj = storage.get("Place", place_id)
     if place_obj is None:
         abort(404)
-    req = request.json
+    req = request.get_json()
     if not req:
         return jsonify({"error": "Not a JSON"}), 400
-    rev_req = request.get_json()
-    if "user_id" not in rev_req:
+    if "user_id" not in req:
         return jsonify({"error": "Missing user_id"}), 400
-    user_obj = storage.get("User", rev_req["user_id"])
+    user_obj = storage.get("User", req["user_id"])
     if user_obj is None:
         abort(404)
-    if "text" not in rev_req:
+    if "text" not in req:
         return jsonify({"error": "Missing text"}), 400
     else:
-        ruid = rev_req["user_id"]
-        rxt = rev_req["text"]
+        ruid = req["user_id"]
+        rxt = req["text"]
         rev = Review(user_id=ruid, text=rxt, place_id=place_id)
-        for key, value in rev_req.items():
+        for key, value in req.items():
             setattr(rev, key, value)
         rev.save()
         return jsonify(rev.to_dict()), 201
