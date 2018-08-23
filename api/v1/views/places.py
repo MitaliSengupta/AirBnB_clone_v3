@@ -73,13 +73,14 @@ def create_place(city_id):
 @app_views.route('/places/<place_id>', methods=['PUT'], strict_slashes=False)
 def update_place(place_id):
     """ Updates a Place object """
-    req = request.get_json()
+    req = request.json()
+    p_req = request.get_json()
     place_obj = storage.get("Place", place_id)
     if place_obj is None:
         abort(404)
     if not req:
         return (jsonify({'error': "Not a JSON"}), 400)
-    for key, val in req.items():
+    for key, val in p_req.items():
         if key not in ['id', 'created_at', 'user_id', 'city_id']:
             setattr(place_obj, key, val)
     place_obj.save()
