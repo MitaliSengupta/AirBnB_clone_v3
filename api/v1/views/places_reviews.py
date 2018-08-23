@@ -63,10 +63,13 @@ def create_review(place_id):
     if "text" not in rev_req:
         return jsonify({"error": "Missing text"}), 400
     else:
-        rev_obj = Review(**rev_req)
-        rev_obj.place_id = place_id
-        rev_obj.save()
-        return jsonify(rev_obj.to_dict()), 201
+        ruid = rev_req["user_id"]
+        rxt = rev_req["text"]
+        rev = Review(user_id=ruid, text=rxt, place_id=place_id)
+        for key, value in rev_req.items():
+            setattr(rev, key, value)
+        rev.save()
+        return jsonify(rev.to_dict()), 201
 
 
 @app_views.route('/reviews/<review_id>', methods=['PUT'], strict_slashes=False)
