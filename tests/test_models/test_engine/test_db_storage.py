@@ -13,13 +13,6 @@ from models import storage
 from console import HBNBCommand
 from os import getenv
 from io import StringIO
-import models
-from models.base_model import BaseModel, Base
-from models.city import City
-from models.state import State
-from models.user import User
-from models.amenity import Amenity
-
 
 db = getenv("HBNB_TYPE_STORAGE")
 
@@ -129,72 +122,19 @@ class test_DBStorage(unittest.TestCase):
         '''
         self.assertTrue(isinstance(storage, DBStorage))
 
-    def test_existence_user(self):
-        '''
-        Testing if User class is being created properly
-        '''
-        user = User(email="john@snow.com", password="johnpwd")
-        user.save()
-        if user.id in models.storage.all('User'):
-            self.assertTrue(user.password, "johnpwd")
+    def test_get_db_storage(self):
+        """This test the get method in db_storage"""
+        new_state = State(name="NewYork")
+        storage.new(new_state)
+        first_state_id = list(storage.all("State").values())[0].id
+        self.assertEqual(type(storage.get("State", first_state_id)), State)
 
-    def test_existence_amenity(self):
-        '''
-        Testing if Amenity class is being created properly
-        '''
-        amenity = Amenity(name="Wifi")
-        amenity.save()
-        if amenity.id in models.storage.all():
-            self.assertTrue(amenity.name, "Wifi")
-
-    def test_existence_state(self):
-        '''
-        Testing if State class is being created properly
-        '''
-        state = State(name="Alaska")
-        state.save()
-        if state.id in models.storage.all():
-            self.assertTrue(state.name, "Alaska")
-
-    def test_delete_method(self):
-        '''
-            Tests the delete method in db_storage
-        '''
-        state = State(name="Texas")
-        state.save()
-        all_stored = models.storage.all()
-        models.storage.delete(state)
-        self.assertTrue(all_stored["State." + state.id])
-
-    def test_get_count_all(self):
-        '''
-            Tests the count method in db_storage
-        '''
-        all_obj = models.storage.all()
-        count_all_obj = models.storage.count()
-        self.assertEqual(len(all_obj), count_all_obj)
-
-    def test_get_count_cls(self):
-        '''
-            Tests the count method in db_storage with class name given
-        '''
-        all_obj = models.storage.all('State')
-        count_all_obj = models.storage.count('State')
-        self.assertEqual(len(all_obj), count_all_obj)
-
-    def test_get_method(self):
-        '''
-            Tests the get method
-        '''
-        state = State(name="Texas")
-        state.save()
-        state_id = state.id
-        get_state = models.storage.get('State', state_id)
-        self.assertEqual(state, get_state)
-
-    def test_get_method_cls(self):
-        '''
-            Tests the get method without instance id
-        '''
-        get_state = models.storage.get('State', 'jlk124343')
-        self.assertEqual(get_state, None)
+    def test_count_db_storage(self):
+        """This test the get method in db_storage"""
+        storage.reload()
+        result = storage.all("")
+        count = storage.count(None)
+        self.assertEqual(len(result), count)
+        result = storage.all("State")
+        count = storage.count("State")
+        self.assertEqual(len(result), count)

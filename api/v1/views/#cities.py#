@@ -12,18 +12,15 @@ from models import State
 
 @app_views.route('/states', methods=["GET"])
 def get_all_states():
-=======
 from models import City
 
 
 @app_views.route("/states/<state_id>/cities", methods=["GET"],
                  strict_slashes=False)
 def state_city(state_id):
->>>>>>> 0e81719157a643eb18d87f79e759126afbcf4786
     """
     gets all states
     """
-<<<<<<< HEAD
     states = []
     for v in storage.all("State").values():
         states.append(v.to_dict())
@@ -32,7 +29,6 @@ def state_city(state_id):
 
 @app_views.route("/states/<state_id>", methods=["GET"])
 def state(state_id=None):
-=======
     state = storage.get("State", state_id)
     if state is None:
         abort(404)

@@ -35,12 +35,12 @@ def indv_review(review_id):
                  strict_slashes=False)
 def del_review(review_id):
     """ Deletes a Review object """
-    review_obj = storage.get('Review', review_id)
-    if review_id is None or review_obj is None:
+    try:
+        storage.delete(storage.get("Review", review_id))
+        storage.save()
+        return jsonify({}), 200
+    except Exception:
         abort(404)
-    if review_obj:
-        storage.delete(review_obj)
-        return (jsonify({}), 200)
 
 
 @app_views.route('/places/<place_id>/reviews', methods=['POST'],
