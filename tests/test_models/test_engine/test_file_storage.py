@@ -105,7 +105,7 @@ class testFileStorage(unittest.TestCase):
         try:
             self.storage.reload()
             self.assertTrue(True)
-        except:
+        except Exception:
             self.assertTrue(False)
 
     def test_delete(self):
@@ -129,121 +129,20 @@ class testFileStorage(unittest.TestCase):
         '''
         self.assertTrue(isinstance(storage, FileStorage))
 
-
-    def test_all_return_type(self):
-        '''
-            Tests the data type of the return value of the all method.
-        '''
-        storage_all = self.storage.all()
-        self.assertIsInstance(storage_all, dict)
-
-    def test_new_method(self):
-        '''
-            Tests that the new method sets the right key and value pair
-            in the FileStorage.__object attribute
-        '''
-        self.storage.new(self.my_model)
-        key = str(self.my_model.__class__.__name__ + "." + self.my_model.id)
-        self.assertTrue(key in self.storage._FileStorage__objects)
-
-    def test_objects_value_type(self):
-        '''
-            Tests that the type of value contained in the FileStorage.__object
-            is of type obj.__class__.__name__
-        '''
-        self.storage.new(self.my_model)
-        key = str(self.my_model.__class__.__name__ + "." + self.my_model.id)
-        val = self.storage._FileStorage__objects[key]
-        self.assertIsInstance(self.my_model, type(val))
-
-    def test_save_file_exists(self):
-        '''
-            Tests that a file gets created with the name file.json
-        '''
-        self.storage.save()
-        self.assertTrue(os.path.isfile("file.json"))
-
-    def test_save_file_read(self):
-        '''
-            Testing the contents of the files inside the file.json
-        '''
-        self.storage.save()
-        self.storage.new(self.my_model)
-
-        with open("file.json", encoding="UTF8") as fd:
-            content = json.load(fd)
-
-        self.assertTrue(type(content) is dict)
-
-    def test_the_type_file_content(self):
-        '''
-            testing the type of the contents inside the file.
-        '''
-        self.storage.save()
-        self.storage.new(self.my_model)
-
-        with open("file.json", encoding="UTF8") as fd:
-            content = fd.read()
-
-        self.assertIsInstance(content, str)
-
-    def test_reaload_without_file(self):
-        '''
-            Tests that nothing happens when file.json does not exists
-            and reload is called
-        '''
-
-        try:
-            self.storage.reload()
-            self.assertTrue(True)
-        except:
-            self.assertTrue(False)
-
-    def test_deletion(self):
-        '''
-            Tests for an object being deleted with the delete method
-        '''
+    def test_get_file_storage(self):
+        """This test the get method in file_storage"""
         fs = FileStorage()
         new_state = State()
-        new_state.name = "Polynesia"
         fs.new(new_state)
-        my_id = new_state.id
-        fs.save()
-        fs.delete(new_state)
-        with open("file.json", encoding="UTF-8") as fd:
-            json_dict = json.load(fd)
-        for key, value in json_dict.items():
-            self.assertTrue(value['id'] != my_id)
+        first_state_id = list(storage.all("State").values())[0].id
+        self.assertEqual(type(storage.get("State", first_state_id)), State)
 
-    def test_filestorage_count(self):
-        '''
-            Tests the count method
-        '''
-        all_obj = models.storage.all()
-        count_all_obj = models.storage.count()
-        self.assertEqual(len(all_obj), count_all_obj)
-
-    def test_filestorage_count_cls(self):
-        '''
-            Tests the count method with class name
-        '''
-        all_obj = models.storage.all('State')
-        count_all_obj = models.storage.count('State')
-        self.assertEqual(len(all_obj), count_all_obj)
-
-    def test_get_method_cls(self):
-        '''
-            Tests the get method with class name and id given
-        '''
-        state = State(name='Texas')
-        state.save()
-        state_id = state.id
-        get_state = models.storage.get('State', state_id)
-        self.assertEqual(state, get_state)
-
-    def test_get_method(self):
-        '''
-            Tests the get method
-        '''
-        get_state = models.storage.get('State', '12343')
-        self.assertEqual(get_state, None)
+    def test_count_file_storage(self):
+        """This test the get method in file_storage"""
+        storage.reload()
+        result = storage.all("")
+        count = storage.count(None)
+        self.assertEqual(len(result), count)
+        result = storage.all("State")
+        count = storage.count("State")
+        self.assertEqual(len(result), count)
