@@ -24,11 +24,10 @@ def all_place(city_id):
 @app_views.route('/places/<place_id>', methods=['GET'], strict_slashes=False)
 def indv_place(place_id):
     """ Retrieves a Place object """
-    try:
-        place_obj = storage.get('Place', place_id)
-        return jsonify(place_obj.to_dict())
-    except Exception:
+    place_obj = storage.get("Place", place_id)
+    if place_obj is None:
         abort(404)
+    return jsonify(place_obj.to_dict()), 200
 
 
 @app_views.route('/places/<place_id>', methods=['DELETE'],
@@ -59,13 +58,13 @@ def create_place(city_id):
     user_obj = storage.get("User", p_req["user_id"])
     if user_obj is None:
         abort(404)
-        if "name" not in p_req:
+    if "name" not in p_req:
         return jsonify({"error": "Missing name"}), 400
     else:
-        new_user_id = place_dict["user_id"]
-        new_name = place_dict["name"]
+        new_user_id = p_req["user_id"]
+        new_name = p_req["name"]
         new_place = Place(user_id=new_user_id, name=new_name, city_id=city_id)
-        for key, value in place_dict.items():
+        for key, value in p_req.items():
             setattr(new_place, key, value)
         new_place.save()
         return jsonify(new_place.to_dict()), 201
