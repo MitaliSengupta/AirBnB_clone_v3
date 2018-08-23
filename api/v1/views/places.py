@@ -60,10 +60,14 @@ def create_place(city_id):
         abort(404)
     if 'name' not in req:
         return (jsonify({'error': 'Missing name'}), 400)
-    req['city_id'] == city_id
-    new_place = Place(**req)
-    new_place.save()
-    return (jsonify(new_place.to_dict()), 201)
+    else:
+        new_user_id = req["user_id"]
+        new_name = req["name"]
+        new_place = Place(user_id=new_user_id, name=new_name, city_id=city_id)
+        for key, value in req.items():
+            setattr(new_place, key, value)
+        new_place.save()
+        return jsonify(new_place.to_dict()), 201
 
 
 @app_views.route('/places/<place_id>', methods=['PUT'], strict_slashes=False)
