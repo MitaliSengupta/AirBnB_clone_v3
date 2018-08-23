@@ -29,7 +29,7 @@ def indv_review(review_id):
     if rev_obj is None:
         abort(404)
     else:
-        return jsonify(rev_obj.to_dict())
+        return jsonify(rev_obj.to_dict(), 200)
 
 
 @app_views.route('/reviews/<review_id>', methods=['DELETE'],
@@ -55,11 +55,11 @@ def create_review(place_id):
     req = request.get_json()
     if not req:
         return jsonify({"error": "Not a JSON"}), 400
-    if "user_id" not in req:
-        return jsonify({"error": "Missing user_id"}), 400
     user_obj = storage.get("User", req["user_id"])
     if user_obj is None:
         abort(404)
+    if "user_id" not in req:
+        return jsonify({"error": "Missing user_id"}), 400
     if "text" not in req:
         return jsonify({"error": "Missing text"}), 400
     else:
