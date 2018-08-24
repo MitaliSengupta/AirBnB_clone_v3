@@ -23,7 +23,7 @@ def amenities_places(place_id):
     amenity = []
     if getenv('HBNB_TYPE_STORAGE') == 'db':
         place_amen = place.amenities
-        for amen in amenity:
+        for amen in place_amen:
             amenity.append(amen.to_dict())
     else:
         place_amen = place.amenity_ids
