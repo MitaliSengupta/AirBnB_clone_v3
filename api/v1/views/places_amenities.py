@@ -46,9 +46,9 @@ def delete_obj(place_id, amenity_id):
         abort(404)
     if getenv('HBNB_TYPE_STORAGE') == 'db':
         place_amen = place.amenities
-        if am not in place_amen:
+        if amenity not in place_amen:
             abort(404)
-        place_amen.remove(am)
+        place_amen.remove(amenity)
     else:
         place_amen = place.amenity_ids
         if amenity_id not in place_amen:
