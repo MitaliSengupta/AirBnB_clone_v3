@@ -32,8 +32,8 @@ def amenities_places(place_id):
     return jsonify(amenity)
 
 
-@app_views.route("/places/<place_id>/amenities/<amenity_id>", methods=["DELETE"]
-                 , strict_slashes=False)
+@app_views.route("/places/<place_id>/amenities/<amenity_id>",
+                 methods=["DELETE"], strict_slashes=False)
 def delete_obj(place_id, amenity_id):
     """
     Delete place amenity obj
@@ -58,8 +58,8 @@ def delete_obj(place_id, amenity_id):
     return jsonify({}), 200
 
 
-@app_views.route("/places/<place_id>/amenities/<amenity_id>", methods=["POST"]
-                 , strict_slashes=False)
+@app_views.route("/places/<place_id>/amenities/<amenity_id>", methods=["POST"],
+                 strict_slashes=False)
 def post_pl_am(place_id, amenity_id):
     """
     link pl to amen
