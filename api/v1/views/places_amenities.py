@@ -8,7 +8,7 @@ from flask import jsonify, abort, request
 from models import storage
 from models import Place
 from models import Amenity
-import os
+from os import getenv
 
 
 @app_views.route("/places/<place_id>/amenities", methods=["GET"],
@@ -72,13 +72,13 @@ def post_pl_am(place_id, amenity_id):
         abort(404)
     if getenv('HBNB_TYPE_STORAGE') == 'db':
         place_amen = place.amenities
-        if am in place_amen:
-            return jsonify(am.to_dict()), 200
-        place_amen.append(am)
+        if amenity in place_amen:
+            return jsonify(amenity.to_dict()), 200
+        place_amen.append(amenity)
     else:
         place_amen = place.amenity_ids
         if amenity_id in place_amen:
-            return jsonify(am.to_dict()), 200
+            return jsonify(amenity.to_dict()), 200
         place_amen.append(amenity_id)
     place.save()
-    return jsonify(am.to_dict()), 201
+    return jsonify(amenity.to_dict()), 201
